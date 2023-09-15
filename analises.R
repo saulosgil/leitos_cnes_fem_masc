@@ -6,10 +6,8 @@ library(patchwork)
 
 # objeto com todos os estados -----------------------------------------------------------------
 states <-
-  geobr::read_state(
-    year = 2020,
-    showProgress = FALSE
-)
+  geobr::read_state(year = 2020,
+                    showProgress = FALSE)
 
 # dataset CNES - leitos -----------------------------------------------------------------------
 df <-
@@ -18,27 +16,31 @@ df <-
 df_joined <-
   dplyr::inner_join(x = states,
                     y = df,
-                    by = c("abbrev_state" = "uf"))
+                    by = c("abbrev_state" = "sigla_uf"))
 
 dplyr::glimpse(df_joined)
 
 # grafico -------------------------------------------------------------------------------------
-# mapa indi
+# mapa indiferenciado
 g1 <-
   df_joined |>
+  mutate(leito_repouso_ind_urgencia_cem_mil =
+           as.integer((
+             total_leito_repouso_ind_urgencia / populacao
+           ) * 100000)) |>
   ggplot() +
-  geom_sf(
-    aes(fill = as.integer(total_leito_repouso_ind_urgencia)),
-    color = NA,
-    size = .15
-  ) +
-  labs(subtitle = "Leitos disponíveis para repouso em emergência indiferenciado (2022)",
+  geom_sf(aes(fill = leito_repouso_ind_urgencia_cem_mil),
+          color = NA,
+          size = .15) +
+  labs(title = "Leitos disponíveis para repouso em emergência indiferenciado (2021)",
+       subtitle = "Nº de leitos para 100.000 habitantes",
        size = 8) +
   scale_fill_distiller(
     palette = "YlOrRd",
-    name = "Nº leitos",
-    limits = c(0,80000),
-    direction = 2) +
+    name = "",
+    limits = c(0, 400),
+    direction = 2
+  ) +
   theme_minimal() +
   geom_sf_text(aes(label = abbrev_state),
                size = 2) +
@@ -48,87 +50,99 @@ g1 <-
 # coluna indiferenciado
 g2 <-
   df_joined |>
-  mutate(total_leito_repouso_ind_urgencia = as.integer(total_leito_repouso_ind_urgencia) /
-           1000) |>
-  mutate(name_state = forcats::fct_reorder(name_state, total_leito_repouso_ind_urgencia)) |>
+  mutate(leito_repouso_ind_urgencia_cem_mil =
+           as.integer((
+             total_leito_repouso_ind_urgencia / populacao
+           ) * 100000)) |>
+  mutate(name_state = forcats::fct_reorder(name_state, leito_repouso_ind_urgencia_cem_mil)) |>
   ggplot(
     aes(x = name_state,
-        y = total_leito_repouso_ind_urgencia,
-        fill = total_leito_repouso_ind_urgencia)
+        y = leito_repouso_ind_urgencia_cem_mil,
+        fill = leito_repouso_ind_urgencia_cem_mil)
   ) +
   geom_bar(stat = "identity",
            colour = "black",
            show.legend = FALSE) +
   xlab("") +
-  ylab("Nº de Leitos/1000 indivíduos") +
+  ylab("Nº de Leitos/100.000 habitantes") +
   scale_fill_distiller(palette = "YlOrRd",
-                       limits = c(0, 100),
+                       limits = c(0, 400),
                        direction = 2) +
   theme_minimal() +
-  scale_y_continuous(limits = c(0,80)) +
+  scale_y_continuous(limits = c(0, 400)) +
   coord_flip()
 
 # mapa mulheres
 g3 <-
   df_joined |>
+  mutate(leito_repouso_fem_urgencia_cem_mil =
+           as.integer((
+             total_leito_repouso_fem_urgencia / populacao
+           ) * 100000)) |>
   ggplot() +
-  geom_sf(
-    aes(fill = as.integer(total_leito_repouso_fem_urgencia)),
-    color = NA,
-    size = .15
-  ) +
-  labs(subtitle = "Leitos disponíveis para repouso em emergência exclusivo para mulheres (2022)",
+  geom_sf(aes(fill = leito_repouso_fem_urgencia_cem_mil),
+          color = NA,
+          size = .15) +
+  labs(title = "Leitos disponíveis para repouso em emergência exclusivo para mulheres (2021)",
+       subtitle = "Nº de leitos para 100.000 habitantes",
        size = 8) +
   scale_fill_distiller(
     palette = "PuRd",
-    name = "Nº leitos",
-    limits = c(0,30000),
-    direction = 1) +
+    name = "",
+    limits = c(0, 400),
+    direction = 2
+  ) +
   theme_minimal() +
   geom_sf_text(aes(label = abbrev_state),
-               size = 2)  +
+               size = 2) +
   xlab("") +
   ylab("")
 
 # coluna mulheres
 g4 <-
   df_joined |>
-  mutate(total_leito_repouso_fem_urgencia = as.integer(total_leito_repouso_fem_urgencia) /
-           1000) |>
-  mutate(name_state = forcats::fct_reorder(name_state, total_leito_repouso_fem_urgencia)) |>
+  mutate(leito_repouso_fem_urgencia_cem_mil =
+           as.integer((
+             total_leito_repouso_fem_urgencia / populacao
+           ) * 100000)) |>
+  mutate(name_state = forcats::fct_reorder(name_state, leito_repouso_fem_urgencia_cem_mil)) |>
   ggplot(
     aes(x = name_state,
-        y = total_leito_repouso_fem_urgencia,
-        fill = total_leito_repouso_fem_urgencia)
+        y = leito_repouso_fem_urgencia_cem_mil,
+        fill = leito_repouso_fem_urgencia_cem_mil)
   ) +
   geom_bar(stat = "identity",
            colour = "black",
            show.legend = FALSE) +
   xlab("") +
-  ylab("Nº de Leitos/1000 indivíduos") +
+  ylab("Nº de Leitos/100.000 habitantes") +
   scale_fill_distiller(palette = "PuRd",
-                       limits = c(0, 30),
+                       limits = c(0, 400),
                        direction = 2) +
   theme_minimal() +
-  scale_y_continuous(limits = c(0,80)) +
+  scale_y_continuous(limits = c(0, 400)) +
   coord_flip()
 
 # mapa homens
 g5 <-
   df_joined |>
+  mutate(leito_repouso_masc_urgencia_cem_mil =
+           as.integer((
+             total_leito_repouso_masc_urgencia / populacao
+           ) * 100000)) |>
   ggplot() +
-  geom_sf(
-    aes(fill = as.integer(total_leito_repouso_masc_urgencia)),
-    color = NA,
-    size = .15
-  ) +
-  labs(subtitle = "Leitos disponíveis para repouso em emergência exclusivo para homens (2022)",
+  geom_sf(aes(fill = leito_repouso_masc_urgencia_cem_mil),
+          color = NA,
+          size = .15) +
+  labs(title = "Leitos disponíveis para repouso em emergência exclusivo para homens (2021)",
+       subtitle = "Nº de leitos para 100.000 habitantes",
        size = 8) +
   scale_fill_distiller(
     palette = "Blues",
-    name = "Nº leitos",
-    limits = c(0,30000),
-    direction = 2) +
+    name = "",
+    limits = c(0, 400),
+    direction = 2
+  ) +
   theme_minimal() +
   geom_sf_text(aes(label = abbrev_state),
                size = 2) +
@@ -138,24 +152,27 @@ g5 <-
 # coluna homens
 g6 <-
   df_joined |>
-  mutate(total_leito_repouso_masc_urgencia = as.integer(total_leito_repouso_masc_urgencia) /
-           1000) |>
-  mutate(name_state = forcats::fct_reorder(name_state, total_leito_repouso_masc_urgencia)) |>
+  mutate(leito_repouso_masc_urgencia_cem_mil =
+           as.integer((
+             total_leito_repouso_masc_urgencia / populacao
+           ) * 100000)) |>
+  mutate(name_state = forcats::fct_reorder(name_state, leito_repouso_masc_urgencia_cem_mil)) |>
   ggplot(
     aes(x = name_state,
-        y = total_leito_repouso_masc_urgencia,
-        fill = total_leito_repouso_masc_urgencia)
+        y = leito_repouso_masc_urgencia_cem_mil,
+        fill = leito_repouso_masc_urgencia_cem_mil)
   ) +
   geom_bar(stat = "identity",
            colour = "black",
            show.legend = FALSE) +
   xlab("") +
-  ylab("Nº de Leitos/1000 indivíduos") +
+  ylab("Nº de Leitos/100.000 habitantes") +
   scale_fill_distiller(palette = "Blues",
-                       limits = c(0, 30),
+                       limits = c(0, 400),
                        direction = 2) +
   theme_minimal() +
-  scale_y_continuous(limits = c(0,80)) +
+  scale_y_continuous(limits = c(0, 400)) +
   coord_flip()
 
-(g1+g2)/(g3+g4)/(g5+g6)
+# Layout com todos graficos
+(g1 + g2) / (g3 + g4) / (g5 + g6)
