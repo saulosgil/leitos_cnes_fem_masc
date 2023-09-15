@@ -7,10 +7,11 @@ basedosdados::set_billing_id("analise-dados-curso-bda")
 
 # pegando a query -----------------------------------------------------------------------------
 query <-
-  "
+"
 SELECT
-  ano,
-  sigla_uf AS uf,
+  a.ano,
+  a.sigla_uf,
+  b.populacao,
   SUM(quantidade_leito_repouso_feminino_urgencia) AS total_leito_repouso_fem_urgencia,
   SUM(quantidade_leito_repouso_masculino_urgencia) AS total_leito_repouso_masc_urgencia,
   SUM(quantidade_leito_repouso_indiferenciado_urgencia) AS total_leito_repouso_ind_urgencia,
@@ -24,12 +25,17 @@ SELECT
   SUM(quantidade_sala_repouso_masculino_ambulatorial) AS total_sala_repouso_masc_ambulatorio,
   SUM(quantidade_sala_repouso_indiferenciado_ambulatorial) AS total_sala_repouso_ind_ambulatorio
 FROM
-  `basedosdados.br_ms_cnes.estabelecimento`
+  basedosdados.br_ms_cnes.estabelecimento a
+INNER JOIN
+    basedosdados.br_ibge_populacao.uf b
+  ON
+    a.sigla_uf = b.sigla_uf
 WHERE
-  ano = 2022
+  a.ano = 2021 AND b.ano = 2021
 GROUP BY
   ano,
-  uf
+  a.sigla_uf,
+  b.populacao
 "
 
 # lendo a query -------------------------------------------------------------------------------
