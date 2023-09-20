@@ -128,7 +128,7 @@ g5 <-
   df_joined |>
   mutate(sala_repouso_masc_urgencia_cem_mil =
            as.integer((
-             total_sala_repouso_fem_urgencia / populacao
+             total_sala_repouso_masc_urgencia / populacao
            ) * 100000)) |>
   ggplot() +
   geom_sf(aes(fill = sala_repouso_masc_urgencia_cem_mil),
@@ -154,7 +154,7 @@ g6 <-
   df_joined |>
   mutate(sala_repouso_masc_urgencia_cem_mil =
            as.integer((
-             total_sala_repouso_fem_urgencia / populacao
+             total_sala_repouso_masc_urgencia / populacao
            ) * 100000)) |>
   mutate(name_state = forcats::fct_reorder(name_state, sala_repouso_masc_urgencia_cem_mil)) |>
   ggplot(
