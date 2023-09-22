@@ -55,6 +55,17 @@ tabela <-
     total_sala_repouso_ind_urgencia   = as.integer(total_sala_repouso_ind_urgencia)
   )
 
+# salas/consultórios em unidades de emergência/urgência
+sum(tabela$total_consultorio_fem_urgencia)
+sum(tabela$total_consultorio_masc_urgencia)
+
+# salas de repouso em unidades de emergência/urgência
+sum(tabela$total_sala_repouso_fem_urgencia)
+sum(tabela$total_sala_repouso_masc_urgencia)
+
+# leitos de repouso/observação em unidades de emergência/urgência
+sum(tabela$total_leito_repouso_fem_urgencia)
+sum(tabela$total_leito_repouso_masc_urgencia)
 
 
 
