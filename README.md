@@ -1,5 +1,3 @@
-<<<<<<< HEAD
-
 # 🏩🛌 Equidade De Sexo Na Saúde: Para Quem São As Salas E Leitos Hospitalares No Brasil? Análise Descritiva Do Cadastro Nacional De Estabelecimentos De Saúde (Research-UNISA)
 
 ## 📒 Resumo
