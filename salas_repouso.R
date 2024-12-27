@@ -11,7 +11,7 @@ states <-
 
 # dataset CNES - leitos -----------------------------------------------------------------------
 df <-
-  readr::read_rds("tabela")
+  readr::read_csv("tabela")
 
 df_joined <-
   dplyr::inner_join(x = states,

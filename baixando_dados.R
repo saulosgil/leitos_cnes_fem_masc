@@ -46,5 +46,5 @@ df <-
 dplyr::glimpse(df)
 
 # salvando o df -------------------------------------------------------------------------------
-readr::write_rds(x = df, file = "tabela")
+readr::write_csv(x = df, file = "tabela")
 
