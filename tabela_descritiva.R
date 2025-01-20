@@ -11,7 +11,7 @@ states <-
 
 # dataset CNES - leitos -----------------------------------------------------------------------
 df <-
-  readr::read_rds("tabela")
+  readr::read_csv("tabela")
 
 df_joined <-
   dplyr::inner_join(x = states,
@@ -23,10 +23,10 @@ dplyr::glimpse(df_joined)
 # Estatistica descritiva ----------------------------------------------------------------------
 tabela <-
   df_joined |>
-  select(-code_state,
-         -name_state,
+  select(-name_state,
+         -code_state,
          -code_region,
-         -name_region,
+         # -name_region,
          -geom,
          -total_sala_repouso_ind_ambulatorio,
          -total_sala_repouso_fem_ambulatorio,
@@ -67,6 +67,83 @@ sum(tabela$total_sala_repouso_masc_urgencia)
 sum(tabela$total_leito_repouso_fem_urgencia)
 sum(tabela$total_leito_repouso_masc_urgencia)
 
+# Resumo de cada região -----------------------------------------------------------------------
+by_tabela <-
+  tabela |>
+  group_by(name_region)
 
 
+# total_leito_repouso_fem/masc/ind_urgencia
+## feminino
+by_tabela |>
+  summarise(
+    sum = sum(total_leito_repouso_fem_urgencia),
+    minimo = min(total_leito_repouso_fem_urgencia),
+    maximo = max(total_leito_repouso_fem_urgencia)
+    )
 
+## masculino
+by_tabela |>
+  summarise(
+    sum = sum(total_leito_repouso_masc_urgencia),
+    minimo = min(total_leito_repouso_masc_urgencia),
+    maximo = max(total_leito_repouso_masc_urgencia)
+    )
+
+## indiferenciado
+by_tabela |>
+  summarise(
+    sum = sum(total_leito_repouso_ind_urgencia),
+    minimo = min(total_leito_repouso_ind_urgencia),
+    maximo = max(total_leito_repouso_ind_urgencia)
+    )
+
+# total_consultorio_fem/masc/ind_urgencia
+## feminino
+by_tabela |>
+  summarise(
+    sum = sum(total_consultorio_fem_urgencia),
+    minimo = min(total_consultorio_fem_urgencia),
+    maximo = max(total_consultorio_fem_urgencia)
+  )
+
+## masculino
+by_tabela |>
+  summarise(
+    sum = sum(total_consultorio_masc_urgencia),
+    minimo = min(total_consultorio_masc_urgencia),
+    maximo = max(total_consultorio_masc_urgencia)
+  )
+
+## indiferenciado
+by_tabela |>
+  summarise(
+    sum = sum(total_consultorio_ind_urgencia),
+    minimo = min(total_consultorio_ind_urgencia),
+    maximo = max(total_consultorio_ind_urgencia)
+  )
+
+# total_sala_repouso_fem/masc/ind_urgencia
+## feminino
+by_tabela |>
+  summarise(
+    sum = sum(total_sala_repouso_fem_urgencia),
+    minimo = min(total_sala_repouso_fem_urgencia),
+    maximo = max(total_sala_repouso_fem_urgencia)
+  )
+
+## masculino
+by_tabela |>
+  summarise(
+    sum = sum(total_sala_repouso_masc_urgencia),
+    minimo = min(total_sala_repouso_masc_urgencia),
+    maximo = max(total_sala_repouso_masc_urgencia)
+  )
+
+## indiferenciado
+by_tabela |>
+  summarise(
+    sum = sum(total_sala_repouso_ind_urgencia),
+    minimo = min(total_sala_repouso_ind_urgencia),
+    maximo = max(total_sala_repouso_ind_urgencia)
+  )
